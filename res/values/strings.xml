@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">RoadReporter</string>
+    <string name="action_settings">Settings</string>
+    <string name="lable_title">Title of Your Report</string>
+    <string name="lable_description">Description of your Report</string>
+    <string name="lable_photo">Photo of The Road</string>
+    <string name="button_save">Save Report</string>
+    <string name="button_submit">Submit Report</string>
+    <string name="button_photo">Take Photo</string>
+    <string name="gps_error_off">GPS is off, Start it ?</string>
+    <string name="gps_error_nofix">Waiting for a gps fix, please wait for some time </string>
+    <string name="ok"> OK</string>
+    <string name="no"> No</string>
+    <string name="title_error_notset">Please enter the Title </string>
+    <string name="desc_error_notset">Please enter the Description </string>
+    <string name="show_reports">Display Saved Reports</string>
+    <string name="context_submit">Submit Report</string>
+    <string name="context_delete">Delete Report</string>
+    <string name="context_details">View Detais</string>
+
+</resources>

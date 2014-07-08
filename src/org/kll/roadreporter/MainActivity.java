@@ -21,6 +21,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -197,37 +198,48 @@ public class MainActivity extends ActionBarActivity implements AsyncTaskComplete
 		String[] report = new String[11];
 		// Title
 		report[0] = edittext_title.getText().toString();
+		Log.i("TITLE@prepareData",report[0]);
 
 		// Description
 		report[1] = edittext_desc.getText().toString();
+		Log.i("DESCRIPRION@prepareData",report[1]);
 
 		// Date
 		report[2] = getDate();
+		Log.i("DATE@prepareData",report[2]);
 
 		// Current hour
 		report[3] = getHour();
+		Log.i("HOUR@prepareData",report[3]);
 
 		// Current minute
 		report[4] = getMinute();
-
+		Log.i("MINUTE@prepareData",report[4]);
+		
 		// Am or Pm
 		report[5] = getAmPm();
-
+		Log.i("AMPM@prepareData",report[5]);
+		
 		// Catogery
 		report[6] = "1";
-
+		Log.i("CATOGERY@prepareData",report[6]);
+		
 		// Latitude
 		report[7] = String.valueOf(currentLocation.getLatitude());
-
+		Log.i("LATITUDE@prepareData",report[7]);
+		
 		// Longitude
 		report[8] = String.valueOf(currentLocation.getLongitude());
-
+		Log.i("LONGITUDE@prepareData",report[8]);
+		
 		// Name of Location
 		report[9] = "mobile app";
-
+		Log.i("LOCATION@prepareData",report[9]);
+		
 		// Path of the photo
 		report[10] = mCurrentPhotoPath;
-
+		Log.i("PHOTOPATH@prepareData",report[10]);
+		
 		return report;
 
 	}
@@ -265,25 +277,25 @@ public class MainActivity extends ActionBarActivity implements AsyncTaskComplete
 	
 	private String getDate() {
 		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
-		String formattedDate = format.format(new Date(0));
+		String formattedDate = format.format(new Date());
 		return formattedDate;
 	}
 
 	private String getHour() {
 		SimpleDateFormat format = new SimpleDateFormat("hh", Locale.US);
-		String formattedHour = format.format(new Date(0));
+		String formattedHour = format.format(new Date());
 		return formattedHour;
 	}
 
 	private String getMinute() {
 		SimpleDateFormat format = new SimpleDateFormat("mm", Locale.US);
-		String formattedMinute = format.format(new Date(0));
+		String formattedMinute = format.format(new Date());
 		return formattedMinute;
 	}
 
 	private String getAmPm() {
 		SimpleDateFormat format = new SimpleDateFormat("aa", Locale.US);
-		String formattedMinute = format.format(new Date(0));
+		String formattedMinute = format.format(new Date());
 		return formattedMinute.toLowerCase(Locale.US);
 	}
 

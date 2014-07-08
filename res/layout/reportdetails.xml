@@ -8,7 +8,6 @@
         android:id="@+id/details_image"
         android:layout_width="match_parent"
         android:layout_height="254dp"
-        android:src="@drawable/abc_ab_bottom_solid_dark_holo"
         android:visibility="invisible" />
 
     <TextView

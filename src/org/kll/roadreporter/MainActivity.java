@@ -7,6 +7,7 @@ import java.util.Locale;
 
 import org.kll.roadreporter.database.DataSource;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -20,7 +21,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,7 +31,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-public class MainActivity extends ActionBarActivity implements AsyncTaskCompleteListener {
+public class MainActivity extends Activity implements AsyncTaskCompleteListener {
 
 	private EditText edittext_title, edittext_desc;
 	private Button btn_save, btn_submit;

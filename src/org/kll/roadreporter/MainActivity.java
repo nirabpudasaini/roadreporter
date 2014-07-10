@@ -1,6 +1,8 @@
 package org.kll.roadreporter;
 
-import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -12,15 +14,14 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
-import android.provider.MediaStore.Images;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -43,6 +44,7 @@ public class MainActivity extends Activity implements AsyncTaskCompleteListener 
 	static final int REQUEST_TAKE_PHOTO = 1;
 	private String mCurrentPhotoPath;
 	private DataSource database;
+	private Uri outputFileUri;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -105,47 +107,35 @@ public class MainActivity extends Activity implements AsyncTaskCompleteListener 
 
 	@Override
 	protected void onResume() {
-		
+
 		super.onResume();
-		
+
 		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
 				5000, 2, locationListener);
 		database.open();
 	}
-	
-	
-	
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (data != null){
-		Bitmap photo = (Bitmap) data.getExtras().get("data");
-		last_photo.setImageBitmap(photo);
-		last_photo.setVisibility(View.VISIBLE);
-
-		// CALL THIS METHOD TO GET THE URI FROM THE BITMAP
-		Uri tempUri = getImageUri(getApplicationContext(), photo);
-		mCurrentPhotoPath = getRealPathFromURI(tempUri);
-
-		System.out.println(getRealPathFromURI(tempUri));
+		if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
+			if (outputFileUri != null) {
+				Bitmap bitmap = null;
+	            try {
+	                GetImageThumbnail getImageThumbnail = new GetImageThumbnail();
+	                bitmap = getImageThumbnail.getThumbnail(outputFileUri, this);
+	            } catch (FileNotFoundException e1) {
+	                e1.printStackTrace();
+	            } catch (IOException e1) {
+	                e1.printStackTrace();
+	            }
+				last_photo.setImageBitmap(bitmap);
+				last_photo.setVisibility(View.VISIBLE);
+			}
 		}
+		//Log.i("ACTIVITYRESULT", mCurrentPhotoPath);
 
 	}
 
-	public Uri getImageUri(Context inContext, Bitmap inImage) {
-		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-		inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-		String path = Images.Media.insertImage(inContext.getContentResolver(),
-				inImage, "Title", null);
-		return Uri.parse(path);
-	}
-
-	public String getRealPathFromURI(Uri uri) {
-		Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-		cursor.moveToFirst();
-		int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-		return cursor.getString(idx);
-	}
 
 	private boolean isEverythingOk() {
 
@@ -170,7 +160,7 @@ public class MainActivity extends Activity implements AsyncTaskCompleteListener 
 			return false;
 		}
 
-		if (mCurrentPhotoPath == null) {
+		if (last_photo.getVisibility() == View.INVISIBLE) {
 			Toast.makeText(getApplicationContext(),
 					"Make sure you have taken the photo", Toast.LENGTH_LONG)
 					.show();
@@ -198,48 +188,48 @@ public class MainActivity extends Activity implements AsyncTaskCompleteListener 
 		String[] report = new String[11];
 		// Title
 		report[0] = edittext_title.getText().toString();
-		Log.i("TITLE@prepareData",report[0]);
+		Log.i("TITLE@prepareData", report[0]);
 
 		// Description
 		report[1] = edittext_desc.getText().toString();
-		Log.i("DESCRIPRION@prepareData",report[1]);
+		Log.i("DESCRIPRION@prepareData", report[1]);
 
 		// Date
 		report[2] = getDate();
-		Log.i("DATE@prepareData",report[2]);
+		Log.i("DATE@prepareData", report[2]);
 
 		// Current hour
 		report[3] = getHour();
-		Log.i("HOUR@prepareData",report[3]);
+		Log.i("HOUR@prepareData", report[3]);
 
 		// Current minute
 		report[4] = getMinute();
-		Log.i("MINUTE@prepareData",report[4]);
-		
+		Log.i("MINUTE@prepareData", report[4]);
+
 		// Am or Pm
 		report[5] = getAmPm();
-		Log.i("AMPM@prepareData",report[5]);
-		
+		Log.i("AMPM@prepareData", report[5]);
+
 		// Catogery
 		report[6] = "1";
-		Log.i("CATOGERY@prepareData",report[6]);
-		
+		Log.i("CATOGERY@prepareData", report[6]);
+
 		// Latitude
 		report[7] = String.valueOf(currentLocation.getLatitude());
-		Log.i("LATITUDE@prepareData",report[7]);
-		
+		Log.i("LATITUDE@prepareData", report[7]);
+
 		// Longitude
 		report[8] = String.valueOf(currentLocation.getLongitude());
-		Log.i("LONGITUDE@prepareData",report[8]);
-		
+		Log.i("LONGITUDE@prepareData", report[8]);
+
 		// Name of Location
 		report[9] = "mobile app";
-		Log.i("LOCATION@prepareData",report[9]);
-		
+		Log.i("LOCATION@prepareData", report[9]);
+
 		// Path of the photo
 		report[10] = mCurrentPhotoPath;
-		Log.i("PHOTOPATH@prepareData",report[10]);
-		
+		Log.i("PHOTOPATH@prepareData", report[10]);
+
 		return report;
 
 	}
@@ -248,7 +238,8 @@ public class MainActivity extends Activity implements AsyncTaskCompleteListener 
 		String[] report = prepareData();
 		database.createRecord(report);
 		clearForm();
-		Toast.makeText(this, "Report Sucessfully Saved", Toast.LENGTH_LONG).show();
+		Toast.makeText(this, "Report Sucessfully Saved", Toast.LENGTH_LONG)
+				.show();
 	}
 
 	private void sendData() {
@@ -262,19 +253,50 @@ public class MainActivity extends Activity implements AsyncTaskCompleteListener 
 		Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 		// Ensure that there's a camera activity to handle the intent
 		if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+
+			File file = getOutputMediaFile();
+			outputFileUri = Uri.fromFile(file);
+			takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+			mCurrentPhotoPath = file.getAbsolutePath(); 
 			startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+
 		} else {
 			Toast.makeText(getBaseContext(), "No Camera App Found",
 					Toast.LENGTH_LONG).show();
 		}
 	}
 
-	private void clearForm(){
+	private static File getOutputMediaFile() {
+		// To be safe, you should check that the SDCard is mounted
+		// using Environment.getExternalStorageState() before doing this.
+
+		File mediaStorageDir = new File(
+				Environment
+						.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+				"RoadReporter");
+
+		if (!mediaStorageDir.exists()) {
+			if (!mediaStorageDir.mkdirs()) {
+				Log.d("MyCameraApp", "failed to create directory");
+				return null;
+			}
+		}
+
+		// Create a media file name
+		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US)
+				.format(new Date());
+		File mediaFile = new File(mediaStorageDir.getPath() + File.separator
+				+ "IMG_" + timeStamp + ".jpg");
+
+		return mediaFile;
+	}
+
+	private void clearForm() {
 		edittext_title.setText("");
 		edittext_desc.setText("");
 		last_photo.setVisibility(View.INVISIBLE);
 	}
-	
+
 	private String getDate() {
 		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
 		String formattedDate = format.format(new Date());
@@ -339,23 +361,24 @@ public class MainActivity extends Activity implements AsyncTaskCompleteListener 
 		if (id == R.id.action_settings) {
 			return true;
 		}
-		if (id == R.id.saved_reports){
+		if (id == R.id.saved_reports) {
 			Intent i = new Intent(this, SavedReports.class);
 			startActivity(i);
 		}
 		return super.onOptionsItemSelected(item);
 	}
-	
+
 	@Override
 	public void onTaskComplete(boolean result) {
-		if (result){
-			Toast.makeText(this, "Sucessfully submitted the Report", Toast.LENGTH_LONG).show();
+		if (result) {
+			Toast.makeText(this, "Sucessfully submitted the Report",
+					Toast.LENGTH_LONG).show();
 			clearForm();
+		} else {
+			Toast.makeText(this, "Problem Submitting the Report Data",
+					Toast.LENGTH_LONG).show();
 		}
-		else{
-			Toast.makeText(this, "Problem Submitting the Report Data", Toast.LENGTH_LONG).show();
-		}
-		
+
 	}
 
 	public class MyLocationListener implements LocationListener {

@@ -117,7 +117,9 @@ public class MainActivity extends Activity implements AsyncTaskCompleteListener 
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		System.out.print("Activity Result");
 		if (requestCode == REQUEST_TAKE_PHOTO && resultCode == RESULT_OK) {
+			System.out.print("Photo Taken and Result OK");
 			if (outputFileUri != null) {
 				Bitmap bitmap = null;
 	            try {
@@ -298,7 +300,7 @@ public class MainActivity extends Activity implements AsyncTaskCompleteListener 
 	}
 
 	private String getDate() {
-		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
+		SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
 		String formattedDate = format.format(new Date());
 		return formattedDate;
 	}

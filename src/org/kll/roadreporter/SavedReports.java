@@ -8,6 +8,7 @@ import org.kll.roadreporter.database.DatabaseModel;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.MenuInflater;
@@ -54,10 +55,6 @@ public class SavedReports extends ListActivity implements AsyncTaskCompleteListe
 		super.onListItemClick(l, v, position, id);
 		report = (DatabaseModel) getListAdapter().getItem(position);
 		this.openContextMenu(l);
-//		String title = report.getTitle();
-//		Intent i = new Intent (this, ReportDetails.class);
-//		i.putExtra("Title", title);
-//		startActivity(i);
 	}
 	
 	@Override
@@ -118,37 +115,48 @@ public class SavedReports extends ListActivity implements AsyncTaskCompleteListe
 
 		String[] data = new String[11];
 		// Title
-		data[0] = report.getTitle();		
+		data[0] = report.getTitle();
+		Log.i("TITLE@prepareDataSaved", data[0]);
 
 		// Description
 		data[1] = report.getDescription();
+		Log.i("DESCRIPTION@prepareDataSaved", data[1]);
 
 		// Date
 		data[2] = report.getDate();
+		Log.i("DATE@prepareDataSaved", data[2]);
 
 		// Current hour
 		data[3] = report.getHour();
+		Log.i("HOUR@prepareDataSaved", data[3]);
 
 		// Current minute
 		data[4] = report.getMinute();
+		Log.i("MINUTE@prepareDataSaved", data[4]);
 
 		// Am or Pm
 		data[5] = report.getAmpm();
+		Log.i("AMPM@prepareDataSaved", data[5]);
 
 		// Catogery
 		data[6] = report.getCatogery();
+		Log.i("CATOGERY@prepareDataSaved", data[6]);
 
 		// Latitude
 		data[7] = report.getLatitude();
+		Log.i("LATITUDE@prepareDataSaved", data[7]);
 
 		// Longitude
 		data[8] = report.getLongitude();
+		Log.i("LONGITUDE@prepareDataSaved", data[8]);
 
 		// Name of Location
 		data[9] = report.getLocation();
+		Log.i("LOCATION@prepareDataSaved", data[9]);
 
 		// Path of the photo
 		data[10] = report.getPhoto_url();
+		Log.i("PHOTOPATH@prepareDataSaved", data[10]);
 
 		return data;
 

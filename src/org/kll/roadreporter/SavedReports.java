@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,7 +19,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-public class SavedReports extends ListActivity implements AsyncTaskCompleteListener{
+public class SavedReports extends ListActivity implements
+		AsyncTaskCompleteListener {
 
 	private DataSource database;
 	private DatabaseModel report;
@@ -36,7 +38,7 @@ public class SavedReports extends ListActivity implements AsyncTaskCompleteListe
 		registerForContextMenu(getListView());
 
 	}
-	
+
 	@Override
 	protected void onPause() {
 		database.close();
@@ -49,68 +51,67 @@ public class SavedReports extends ListActivity implements AsyncTaskCompleteListe
 		super.onResume();
 		database.open();
 	}
-	
+
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
 		report = (DatabaseModel) getListAdapter().getItem(position);
 		this.openContextMenu(l);
 	}
-	
+
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
-	                                ContextMenuInfo menuInfo) {
-	    super.onCreateContextMenu(menu, v, menuInfo);
-	    MenuInflater inflater = getMenuInflater();
-	    inflater.inflate(R.menu.context_menu, menu);
-	}
-	
-	@Override
-	public boolean onContextItemSelected(MenuItem item) {
-	    switch (item.getItemId()) {
-	        case R.id.context_delete:
-	            deleteReport();
-	            Toast.makeText(getBaseContext(), "Report Deleted", Toast.LENGTH_LONG).show();
-	            return true;
-	        case R.id.context_submit:        	
-	        	submitReport();
-	            return true;
-	        case R.id.context_details:
-	        	showDetailsActivity();
-	        	return true;
-	        default:
-	            return super.onContextItemSelected(item);
-	    }
+			ContextMenuInfo menuInfo) {
+		super.onCreateContextMenu(menu, v, menuInfo);
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.context_menu, menu);
 	}
 
-	
-	private void showDetailsActivity(){
-		
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.context_delete:
+			deleteReport();
+			Toast.makeText(getBaseContext(), "Report Deleted",
+					Toast.LENGTH_LONG).show();
+			return true;
+		case R.id.context_submit:
+			submitReport();
+			return true;
+		case R.id.context_details:
+			showDetailsActivity();
+			return true;
+		default:
+			return super.onContextItemSelected(item);
+		}
+	}
+
+	private void showDetailsActivity() {
+
 		Intent i = new Intent(this, ReportDetails.class);
 		Bundle b = new Bundle();
-		String [] data = prepareData();
+		String[] data = prepareData();
 		b.putStringArray("DATA", data);
 		i.putExtras(b);
-    	startActivity(i);
-		
+		startActivity(i);
+
 	}
-	
-	private void deleteReport(){
+
+	private void deleteReport() {
 		@SuppressWarnings("unchecked")
 		ArrayAdapter<DatabaseModel> adapter = (ArrayAdapter<DatabaseModel>) getListAdapter();
 		database.deleteRecord(report);
 		adapter.remove(report);
 		adapter.notifyDataSetChanged();
-		
-		
+
 	}
-	
-	private void submitReport(){
+
+	private void submitReport() {
 		String[] data = prepareData();
 		new SendData(SavedReports.this).execute(data);
 
 	}
-	
+
 	public String[] prepareData() {
 
 		String[] data = new String[11];
@@ -163,15 +164,57 @@ public class SavedReports extends ListActivity implements AsyncTaskCompleteListe
 	}
 
 	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+
+		getMenuInflater().inflate(R.menu.listview_menu, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle action bar item clicks here. The action bar will
+		// automatically handle clicks on the Home/Up button, so long
+		// as you specify a parent activity in AndroidManifest.xml.
+		int id = item.getItemId();
+		if (id == R.id.delete_all) {
+
+			// TODO
+			if (getListAdapter().getCount() != 0) {
+				for (int i = 0; i < getListAdapter().getCount(); i++) {
+					report = (DatabaseModel) getListAdapter().getItem(i);
+					deleteReport();
+					Toast.makeText(getBaseContext(), "Report Deleted",
+							Toast.LENGTH_LONG).show();
+				}
+			}
+
+			return true;
+		}
+		if (id == R.id.submit_all) {
+			// TODO
+			if (getListAdapter().getCount() != 0) {
+				for (int i = 0; i < getListAdapter().getCount(); i++) {
+					report = (DatabaseModel) getListAdapter().getItem(i);
+					submitReport();
+				}
+			}
+
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
 	public void onTaskComplete(boolean result) {
-		if (result){
+		if (result) {
 			deleteReport();
-			Toast.makeText(this, "Sucessfully submitted the Report", Toast.LENGTH_LONG).show();
+			Toast.makeText(this, "Sucessfully submitted the Report",
+					Toast.LENGTH_LONG).show();
+		} else {
+			Toast.makeText(this, "Problem Submitting the Report",
+					Toast.LENGTH_LONG).show();
 		}
-		else{
-			Toast.makeText(this, "Problem Submitting the Report", Toast.LENGTH_LONG).show();
-		}
-		
-	}	
-		
+
+	}
+
 }

@@ -10,6 +10,7 @@
     <string name="lable_photo">Take Picture</string>
     <string name="button_save">Save Report</string>
     <string name="button_submit">Submit Report</string>
+    <string name="button_update">Update Report</string>
     <string name="button_photo">Take Photo</string>
     <string name="gps_error_off">GPS is off, Start it ?</string>
     <string name="gps_error_nofix">Waiting for a gps fix, please wait for some time </string>

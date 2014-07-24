@@ -1,7 +1,6 @@
 package org.kll.roadreporter;
 
-import java.util.List;
-
+import org.kll.roadreporter.adapters.SavedReportListAdapter;
 import org.kll.roadreporter.database.DataSource;
 import org.kll.roadreporter.database.DatabaseModel;
 
@@ -31,10 +30,7 @@ public class SavedReports extends ListActivity implements
 		setContentView(R.layout.reportlist);
 		database = new DataSource(this);
 		database.open();
-		List<DatabaseModel> allSavedReports = database.getAllReports();
-		ArrayAdapter<DatabaseModel> adapter = new ArrayAdapter<DatabaseModel>(
-				this, android.R.layout.simple_list_item_1, allSavedReports);
-		setListAdapter(adapter);
+		setListAdapter(new SavedReportListAdapter(this));
 		registerForContextMenu(getListView());
 
 	}

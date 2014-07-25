@@ -51,12 +51,26 @@ public class DataSource {
 		
 	}
 	
+	public boolean updateRecord(long id,String[] report ){
+		
+		ContentValues values = new ContentValues();
+		for (int i = 0 ; i < (allcolumns.length - 1); i++ ){
+			//Log.i("VALUES"+1, report[i]);
+			values.put(allcolumns[i+1], report[i]);
+		}
+		
+		return mDatabase.update(
+				SqlLiteHelper.TABLE_REPORTS, values, SqlLiteHelper.COLUMN_ID + "=" + id, null) > 0;
+	}
+	
 	public void deleteRecord(DatabaseModel record){
 		long id = record.getId();
 		Log.i("Report deleted with id: " ,String.valueOf(id));
 		mDatabase.delete(SqlLiteHelper.TABLE_REPORTS, SqlLiteHelper.COLUMN_ID
         + " = " + id, null);
 	}
+	
+	
 	
 	public List<DatabaseModel> getAllReports(){
 		

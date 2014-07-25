@@ -71,7 +71,7 @@ public class MainActivity extends Activity implements AsyncTaskCompleteListener 
 				if (isEverythingOk()) {
 					saveToDatabase();
 				}
-				;
+				
 
 			}
 		});

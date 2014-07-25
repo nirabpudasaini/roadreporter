@@ -1,6 +1,5 @@
 package org.kll.roadreporter.adapters;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
@@ -12,7 +11,6 @@ import org.kll.roadreporter.database.DatabaseModel;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -82,6 +80,12 @@ public class SavedReportListAdapter extends BaseAdapter {
 		image.setImageBitmap(bitmap);
 
 		return row;
+	}
+
+	public void remove(DatabaseModel report) {
+		
+		mReports.remove(report);
+		
 	}
 
 }

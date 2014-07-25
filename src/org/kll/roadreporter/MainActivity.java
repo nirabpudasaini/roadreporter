@@ -26,21 +26,26 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
-public class MainActivity extends Activity implements AsyncTaskCompleteListener {
+public class MainActivity extends Activity implements AsyncTaskCompleteListener, OnItemSelectedListener {
 
 	private EditText edittext_title, edittext_desc;
 	private Button btn_save, btn_submit;
 	private ImageView last_photo;
 	private ImageButton btn_photo;
+	private Spinner spin_cat;
 	private LocationManager locationManager;
 	private LocationListener locationListener;
 	private Location currentLocation;
+	private String mCatogery;
 	static final int REQUEST_TAKE_PHOTO = 1;
 	private String mCurrentPhotoPath;
 	private DataSource database;
@@ -56,12 +61,15 @@ public class MainActivity extends Activity implements AsyncTaskCompleteListener 
 		btn_submit = (Button) findViewById(R.id.btn_submit);
 		btn_photo = (ImageButton) findViewById(R.id.btn_photo);
 		last_photo = (ImageView) findViewById(R.id.last_photo);
+		spin_cat = (Spinner) findViewById(R.id.spinner_catogery);
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		locationListener = new MyLocationListener();
 		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
 				5000, 2, locationListener);
 		database = new DataSource(this);
 		database.open();
+		
+		spin_cat.setOnItemSelectedListener(this);
 
 		btn_save.setOnClickListener(new View.OnClickListener() {
 
@@ -190,47 +198,47 @@ public class MainActivity extends Activity implements AsyncTaskCompleteListener 
 		String[] report = new String[11];
 		// Title
 		report[0] = edittext_title.getText().toString();
-		Log.i("TITLE@prepareData", report[0]);
+		//Log.i("TITLE@prepareData", report[0]);
 
 		// Description
 		report[1] = edittext_desc.getText().toString();
-		Log.i("DESCRIPRION@prepareData", report[1]);
+		//Log.i("DESCRIPRION@prepareData", report[1]);
 
 		// Date
 		report[2] = getDate();
-		Log.i("DATE@prepareData", report[2]);
+		//Log.i("DATE@prepareData", report[2]);
 
 		// Current hour
 		report[3] = getHour();
-		Log.i("HOUR@prepareData", report[3]);
+		//Log.i("HOUR@prepareData", report[3]);
 
 		// Current minute
 		report[4] = getMinute();
-		Log.i("MINUTE@prepareData", report[4]);
+		//Log.i("MINUTE@prepareData", report[4]);
 
 		// Am or Pm
 		report[5] = getAmPm();
-		Log.i("AMPM@prepareData", report[5]);
+		//Log.i("AMPM@prepareData", report[5]);
 
 		// Catogery
-		report[6] = "1";
-		Log.i("CATOGERY@prepareData", report[6]);
+		report[6] = mCatogery;
+		//Log.i("CATOGERY@prepareData", report[6]);
 
 		// Latitude
 		report[7] = String.valueOf(currentLocation.getLatitude());
-		Log.i("LATITUDE@prepareData", report[7]);
+		//Log.i("LATITUDE@prepareData", report[7]);
 
 		// Longitude
 		report[8] = String.valueOf(currentLocation.getLongitude());
-		Log.i("LONGITUDE@prepareData", report[8]);
+		//Log.i("LONGITUDE@prepareData", report[8]);
 
 		// Name of Location
 		report[9] = "mobile app";
-		Log.i("LOCATION@prepareData", report[9]);
+		//Log.i("LOCATION@prepareData", report[9]);
 
 		// Path of the photo
 		report[10] = mCurrentPhotoPath;
-		Log.i("PHOTOPATH@prepareData", report[10]);
+		//Log.i("PHOTOPATH@prepareData", report[10]);
 
 		return report;
 
@@ -296,6 +304,7 @@ public class MainActivity extends Activity implements AsyncTaskCompleteListener 
 	private void clearForm() {
 		edittext_title.setText("");
 		edittext_desc.setText("");
+		
 		last_photo.setVisibility(View.INVISIBLE);
 	}
 
@@ -476,6 +485,27 @@ public class MainActivity extends Activity implements AsyncTaskCompleteListener 
 			return provider2 == null;
 		}
 		return provider1.equals(provider2);
+	}
+	
+	@Override
+	public void onItemSelected(AdapterView<?> parent, View view, int position,
+			long id) {
+		if(position == 0){
+			mCatogery = "1";
+		} 
+		else if(position == 1){
+			mCatogery = "2";			
+		}
+		else if(position == 2){
+			mCatogery = "3";
+			
+		}		
+
+	}
+
+	@Override
+	public void onNothingSelected(AdapterView<?> parent) {
+		
 	}
 
 }

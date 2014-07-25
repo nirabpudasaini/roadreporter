@@ -72,6 +72,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="10dp" >
+
             <TextView
                 android:id="@+id/txt_cat"
                 android:layout_width="match_parent"
@@ -86,10 +87,9 @@
                 android:id="@+id/spinner_catogery"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="5dp"
-                android:background="#ffffff"          
-                android:entries="@array/report_catogery" />
-            
+                android:background="#ffffff"
+                android:entries="@array/report_catogery"
+                android:padding="5dp" />
         </LinearLayout>
 
         <LinearLayout

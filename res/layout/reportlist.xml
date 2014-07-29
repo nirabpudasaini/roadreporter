@@ -2,14 +2,20 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#5589b3" >
-    
-        <ListView
+    android:background="#5589b3"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@android:id/empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/message_empty_list"
+        android:textSize="18sp" />
+
+    <ListView
         android:id="@android:id/list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:longClickable="false" />
-    
 
 </LinearLayout>

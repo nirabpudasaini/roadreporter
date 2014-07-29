@@ -24,6 +24,7 @@
     <string name="context_delete">Delete Report</string>
     <string name="menu_delete_all">Delete All Reports</string>
     <string name="context_details">View Detais</string>
+    <string name="message_empty_list">Nothing to display here. Looks like you have submitted all your reports. Please save some reports to populate this list. </string>
     <string name="lable_cat">Categories</string>
     <string-array name="report_catogery">
         <item >Damaged Road</item>

@@ -35,7 +35,8 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-public class MainActivity extends Activity implements AsyncTaskCompleteListener, OnItemSelectedListener {
+public class MainActivity extends Activity implements
+		AsyncTaskCompleteListener, OnItemSelectedListener {
 
 	private EditText edittext_title, edittext_desc;
 	private Button btn_save, btn_submit;
@@ -68,7 +69,7 @@ public class MainActivity extends Activity implements AsyncTaskCompleteListener,
 				5000, 2, locationListener);
 		database = new DataSource(this);
 		database.open();
-		
+
 		spin_cat.setOnItemSelectedListener(this);
 
 		btn_save.setOnClickListener(new View.OnClickListener() {
@@ -79,7 +80,6 @@ public class MainActivity extends Activity implements AsyncTaskCompleteListener,
 				if (isEverythingOk()) {
 					saveToDatabase();
 				}
-				
 
 			}
 		});
@@ -130,22 +130,22 @@ public class MainActivity extends Activity implements AsyncTaskCompleteListener,
 			System.out.print("Photo Taken and Result OK");
 			if (outputFileUri != null) {
 				Bitmap bitmap = null;
-	            try {
-	                GetImageThumbnail getImageThumbnail = new GetImageThumbnail();
-	                bitmap = getImageThumbnail.getThumbnail(outputFileUri, this);
-	            } catch (FileNotFoundException e1) {
-	                e1.printStackTrace();
-	            } catch (IOException e1) {
-	                e1.printStackTrace();
-	            }
+				try {
+					GetImageThumbnail getImageThumbnail = new GetImageThumbnail();
+					bitmap = getImageThumbnail
+							.getThumbnail(outputFileUri, this);
+				} catch (FileNotFoundException e1) {
+					e1.printStackTrace();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
 				last_photo.setImageBitmap(bitmap);
 				last_photo.setVisibility(View.VISIBLE);
 			}
 		}
-		//Log.i("ACTIVITYRESULT", mCurrentPhotoPath);
+		// Log.i("ACTIVITYRESULT", mCurrentPhotoPath);
 
 	}
-
 
 	private boolean isEverythingOk() {
 
@@ -198,47 +198,47 @@ public class MainActivity extends Activity implements AsyncTaskCompleteListener,
 		String[] report = new String[11];
 		// Title
 		report[0] = edittext_title.getText().toString();
-		//Log.i("TITLE@prepareData", report[0]);
+		// Log.i("TITLE@prepareData", report[0]);
 
 		// Description
 		report[1] = edittext_desc.getText().toString();
-		//Log.i("DESCRIPRION@prepareData", report[1]);
+		// Log.i("DESCRIPRION@prepareData", report[1]);
 
 		// Date
 		report[2] = getDate();
-		//Log.i("DATE@prepareData", report[2]);
+		// Log.i("DATE@prepareData", report[2]);
 
 		// Current hour
 		report[3] = getHour();
-		//Log.i("HOUR@prepareData", report[3]);
+		// Log.i("HOUR@prepareData", report[3]);
 
 		// Current minute
 		report[4] = getMinute();
-		//Log.i("MINUTE@prepareData", report[4]);
+		// Log.i("MINUTE@prepareData", report[4]);
 
 		// Am or Pm
 		report[5] = getAmPm();
-		//Log.i("AMPM@prepareData", report[5]);
+		// Log.i("AMPM@prepareData", report[5]);
 
 		// Catogery
 		report[6] = mCatogery;
-		//Log.i("CATOGERY@prepareData", report[6]);
+		// Log.i("CATOGERY@prepareData", report[6]);
 
 		// Latitude
 		report[7] = String.valueOf(currentLocation.getLatitude());
-		//Log.i("LATITUDE@prepareData", report[7]);
+		// Log.i("LATITUDE@prepareData", report[7]);
 
 		// Longitude
 		report[8] = String.valueOf(currentLocation.getLongitude());
-		//Log.i("LONGITUDE@prepareData", report[8]);
+		// Log.i("LONGITUDE@prepareData", report[8]);
 
 		// Name of Location
 		report[9] = "mobile app";
-		//Log.i("LOCATION@prepareData", report[9]);
+		// Log.i("LOCATION@prepareData", report[9]);
 
 		// Path of the photo
 		report[10] = mCurrentPhotoPath;
-		//Log.i("PHOTOPATH@prepareData", report[10]);
+		// Log.i("PHOTOPATH@prepareData", report[10]);
 
 		return report;
 
@@ -267,7 +267,7 @@ public class MainActivity extends Activity implements AsyncTaskCompleteListener,
 			File file = getOutputMediaFile();
 			outputFileUri = Uri.fromFile(file);
 			takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-			mCurrentPhotoPath = file.getAbsolutePath(); 
+			mCurrentPhotoPath = file.getAbsolutePath();
 			startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
 
 		} else {
@@ -304,7 +304,7 @@ public class MainActivity extends Activity implements AsyncTaskCompleteListener,
 	private void clearForm() {
 		edittext_title.setText("");
 		edittext_desc.setText("");
-		
+
 		last_photo.setVisibility(View.INVISIBLE);
 	}
 
@@ -486,26 +486,58 @@ public class MainActivity extends Activity implements AsyncTaskCompleteListener,
 		}
 		return provider1.equals(provider2);
 	}
-	
+
 	@Override
 	public void onItemSelected(AdapterView<?> parent, View view, int position,
 			long id) {
-		if(position == 0){
+		if (position == 0) {
 			mCatogery = "1";
-		} 
-		else if(position == 1){
-			mCatogery = "2";			
-		}
-		else if(position == 2){
+		} else if (position == 1) {
+			mCatogery = "2";
+		} else if (position == 2) {
 			mCatogery = "3";
-			
-		}		
+
+		}
 
 	}
 
 	@Override
 	public void onNothingSelected(AdapterView<?> parent) {
-		
+
+	}
+
+	private void buildAlertDiscardDraft() {
+		final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage(R.string.discard_msg)
+				.setCancelable(false)
+				.setPositiveButton(R.string.ok,
+						new DialogInterface.OnClickListener() {
+							public void onClick(final DialogInterface dialog,
+									final int id) {
+								finish();
+							}
+						})
+				.setNegativeButton(R.string.no,
+						new DialogInterface.OnClickListener() {
+							public void onClick(final DialogInterface dialog,
+									final int id) {
+								dialog.cancel();
+							}
+						});
+		final AlertDialog alert = builder.create();
+		alert.show();
+	}
+
+	@Override
+	public void onBackPressed() {
+
+		if (!(edittext_title.getText().toString().matches(""))
+				|| !(edittext_desc.getText().toString().matches(""))
+				|| !(last_photo.getVisibility() == View.INVISIBLE)) {
+			buildAlertDiscardDraft();
+		} else {
+			super.onBackPressed();
+		}
 	}
 
 }

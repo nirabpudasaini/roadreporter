@@ -13,9 +13,11 @@
     <string name="button_update">Update Report</string>
     <string name="button_photo">Take Photo</string>
     <string name="gps_error_off">GPS is off, Start it ?</string>
+    <string name="gps_error_photo">Your GPS is currently turned off. RoadReporter needs to know the exact location of this photo in order to work correctly. \n\nClicking OK will take you to the settings page where you can enable GPS. Please wait about a minute after turning on your GPS for greater accuracy. </string>
     <string name="gps_error_nofix">Waiting for a gps fix, please wait for some time </string>
     <string name="ok"> OK</string>
     <string name="no"> No</string>
+    <string name= "cancel"> Cancel</string>
     <string name="title_error_notset">Please enter the Title </string>
     <string name="desc_error_notset">Please enter the Description </string>
     <string name="show_reports">Display Saved Reports</string>
@@ -27,12 +29,11 @@
     <string name="discard_msg">Do you want to discard the post?</string>
     <string name="message_empty_list">Nothing to display here. Looks like you have submitted all your reports. Please save some reports to populate this list. </string>
     <string name="lable_cat">Categories</string>
+
     <string-array name="report_catogery">
-        <item >Damaged Road</item>
-        <item >Garbage</item>
-        <item >Other</item>
-        
+        <item>Damaged Road</item>
+        <item>Garbage</item>
+        <item>Other</item>
     </string-array>
-    
 
 </resources>

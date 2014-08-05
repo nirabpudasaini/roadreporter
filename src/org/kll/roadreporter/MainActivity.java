@@ -99,6 +99,12 @@ public class MainActivity extends Activity implements
 
 			@Override
 			public void onClick(View v) {
+				
+				if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+					buildAlertMessageNoGpsWhileTakingPhoto();
+					return;
+				}
+				
 				startCameraToTakePhotoIntent();
 
 			}
@@ -178,7 +184,7 @@ public class MainActivity extends Activity implements
 		}
 
 		if (currentLocation != null) {
-			if (currentLocation.getAccuracy() > 20.0) {
+			if (currentLocation.getAccuracy() > 30.0) {
 				Toast.makeText(getApplicationContext(),
 						R.string.gps_error_nofix, Toast.LENGTH_LONG).show();
 				return false;
@@ -345,6 +351,29 @@ public class MainActivity extends Activity implements
 							}
 						})
 				.setNegativeButton(R.string.no,
+						new DialogInterface.OnClickListener() {
+							public void onClick(final DialogInterface dialog,
+									final int id) {
+								dialog.cancel();
+							}
+						});
+		final AlertDialog alert = builder.create();
+		alert.show();
+	}
+	
+	private void buildAlertMessageNoGpsWhileTakingPhoto() {
+		final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage(R.string.gps_error_photo)
+				.setCancelable(false)
+				.setPositiveButton(R.string.ok,
+						new DialogInterface.OnClickListener() {
+							public void onClick(final DialogInterface dialog,
+									final int id) {
+								startActivity(new Intent(
+										android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+							}
+						})
+				.setNegativeButton(R.string.cancel,
 						new DialogInterface.OnClickListener() {
 							public void onClick(final DialogInterface dialog,
 									final int id) {

@@ -1,6 +1,6 @@
 package org.kll.roadreporter;
 
-import java.io.File;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +12,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
@@ -23,6 +23,8 @@ import org.apache.http.util.EntityUtils;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -45,9 +47,7 @@ public class SendData extends AsyncTask<String, Integer, Boolean> {
 		super.onPreExecute();
 
 		mProgressDialog = new ProgressDialog(activity);
-		mProgressDialog.setMessage("Uploading, Please have Patience");
-		mProgressDialog.setIndeterminate(true);
-		mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+		mProgressDialog.setMessage("Uploading your report, Please have Patience");
 		mProgressDialog.setCancelable(false);
 
 		mProgressDialog.show();
@@ -109,7 +109,8 @@ public class SendData extends AsyncTask<String, Integer, Boolean> {
 		nameValuePair.add(new BasicNameValuePair("longitude", longitude));
 		nameValuePair
 				.add(new BasicNameValuePair("location_name", location_name));
-		nameValuePair.add(new BasicNameValuePair("incident_photo[]", photo_url));
+		nameValuePair
+				.add(new BasicNameValuePair("incident_photo[]", photo_url));
 		nameValuePair.add(new BasicNameValuePair("task", task));
 
 		try {
@@ -121,9 +122,17 @@ public class SendData extends AsyncTask<String, Integer, Boolean> {
 						.equalsIgnoreCase("incident_photo[]")) {
 					// If the key equals to photo, we use FileBody to transfer
 					// the data
-					multiPartEntityBuilder.addPart(nameValuePair.get(index)
-							.getName(), new FileBody(new File(nameValuePair
-							.get(index).getValue())));
+					Bitmap bitmapOrg = BitmapFactory.decodeFile(nameValuePair
+							.get(index).getValue());
+				    ByteArrayOutputStream bao = new ByteArrayOutputStream();
+				    bitmapOrg.compress(Bitmap.CompressFormat.JPEG, 60, bao);
+				    byte[] data = bao.toByteArray();
+				    multiPartEntityBuilder.addPart(nameValuePair.get(index)
+							.getName(), new ByteArrayBody(data, "photo.jpeg"));
+				    
+//					multiPartEntityBuilder.addPart(nameValuePair.get(index)
+//							.getName(), new FileBody(new File(nameValuePair
+//							.get(index).getValue())));
 				} else {
 					// Normal string data
 					multiPartEntityBuilder.addPart(nameValuePair.get(index)
@@ -162,7 +171,7 @@ public class SendData extends AsyncTask<String, Integer, Boolean> {
 			return false;
 		}
 
-		return true;
+		return true;	
+		
 	}
-
 }
